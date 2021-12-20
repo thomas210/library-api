@@ -3,6 +3,7 @@ package com.cursoUdemy.libraryapi.api.resource;
 import com.cursoUdemy.libraryapi.api.dto.BookDTO;
 import com.cursoUdemy.libraryapi.model.entity.Book;
 import com.cursoUdemy.libraryapi.service.BookService;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,27 +12,21 @@ import org.springframework.web.bind.annotation.*;
 public class BookController {
 
     private BookService service;
+    private ModelMapper modelMapper;
 
-    public BookController(BookService service) {
+    public BookController(BookService service, ModelMapper modelMapper) {
         this.service = service;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BookDTO create(@RequestBody BookDTO dto){
-        Book model = Book.builder()
-            .id(1l)
-            .title(dto.getTitle())
-            .author(dto.getAuthor())
-            .isbn(dto.getIsbn())
-            .build();
-        Book entity = service.save(model);
-        return BookDTO.builder()
-                .id(entity.getId())
-                .title(entity.getTitle())
-                .author(entity.getAuthor())
-                .isbn(entity.getIsbn())
-                .build();
+        Book model = this.modelMapper.map(dto, Book.class);
+
+        model = service.save(model);
+
+        return this.modelMapper.map(model, BookDTO.class);
     }
 
 }
