@@ -4,6 +4,6 @@ import com.cursoUdemy.libraryapi.model.entity.Book;
 
 public interface BookService {
 
+    Book save(Book model);
 
-    Book save(Book any);
 }
